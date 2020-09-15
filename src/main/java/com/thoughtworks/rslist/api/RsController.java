@@ -17,7 +17,7 @@ public class RsController {
 //     return rsList.toString();
 //  }
   @GetMapping("/rs/{index}")
-    public  String getRsEventBetween(@PathVariable int index){
+    public  String getOneRsEvent(@PathVariable int index){
       return rsList.get(index -1);
     }
   @GetMapping("/rs/list")
