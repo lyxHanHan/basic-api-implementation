@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 @RestController
 public class RsController {
@@ -39,4 +40,10 @@ public class RsController {
     RsEvent event = objectMapper.readValue(rsEvent,RsEvent.class);
     rsList.add(event);
   }
+
+  @PostMapping("/rs/{index}")
+  public void deleteRsEvent(@PathVariable int index)  {
+    rsList.remove(index-1);
+  }
+
 }
