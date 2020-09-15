@@ -46,4 +46,9 @@ public class RsController {
     rsList.remove(index-1);
   }
 
+  @PostMapping("/rs/{index}")
+  public void modifyRsEvent(@PathVariable int index,@RequestBody(required = false) String eventName,@RequestBody String keyWord)  {
+
+  }
+
 }
