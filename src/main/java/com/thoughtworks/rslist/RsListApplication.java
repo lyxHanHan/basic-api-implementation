@@ -10,4 +10,5 @@ public class RsListApplication {
         SpringApplication.run(RsListApplication.class, args);
     }
 
+
 }
