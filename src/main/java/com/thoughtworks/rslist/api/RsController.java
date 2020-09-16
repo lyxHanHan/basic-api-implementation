@@ -44,7 +44,10 @@ public class RsController {
     if(start == null || end == null){
       return ResponseEntity.ok(rsList);
     }
-    return  ResponseEntity.ok(rsList);
+    if((end - start +1) >rsList.size() || start > rsList.size()){
+      throw new RsEventNotValidException("invalid request param");
+    }
+    return  ResponseEntity.ok(rsList.subList(start - 1,end));
   }
 
   @PostMapping("/rs/event")

@@ -157,7 +157,8 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.error",is("invalid index")));
     }
 
-    @Test void should_throw_method_arguement_not_valid_exception() throws Exception {
+    @Test
+    void should_throw_method_arguement_not_valid_exception() throws Exception {
         User user = new User("lyx11111111","female",18,"1@2.com","12222222222");
         RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -167,4 +168,11 @@ public class RsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid param")));
     }
+    @Test
+    public void should_throw_arguement_not_valid_range_about_start_and_end() throws Exception{
+        mockMvc.perform(get("/rs/list?start=1&end=7"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error",is("invalid request param")));
+    }
+
 }
