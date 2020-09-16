@@ -4,6 +4,7 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +48,8 @@ public class RsController {
   }
 
   @PostMapping("/rs/event")
-  public ResponseEntity<Object> addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    RsEvent event = objectMapper.readValue(rsEvent,RsEvent.class);
-    rsList.add(event);
-
+  public ResponseEntity<Object> addRsEvent(@RequestBody @Valid RsEvent rsEvent) throws JsonProcessingException {
+    rsList.add(rsEvent);
     return ResponseEntity.created(null).build();
   }
 
@@ -69,10 +69,16 @@ public class RsController {
     return ResponseEntity.ok(null);
   }
 
-  @ExceptionHandler(RsEventNotValidException.class)
-  public ResponseEntity rsExceptionHandler (RsEventNotValidException e){
+  @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class})
+  public ResponseEntity rsExceptionHandler (Exception e){
+    String errorMessage;
+    if(e instanceof  MethodArgumentNotValidException){
+      errorMessage = "invalid param";
+    }else {
+      errorMessage = e.getMessage();
+    }
     Error error = new Error();
-    error.setError(e.getMessage());
+    error.setError(errorMessage);
     return ResponseEntity.badRequest().body(error);
   }
 }
