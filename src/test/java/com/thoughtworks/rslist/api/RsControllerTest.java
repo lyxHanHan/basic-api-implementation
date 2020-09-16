@@ -109,9 +109,7 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord",is("无标签")))
                 .andExpect(status().isOk());
-
     }
-
 
     @Test
     public void should_delete_rs_event() throws Exception {
@@ -123,7 +121,6 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[1].eventName",is("第三条事件")))
                 .andExpect(jsonPath("$[1].keyWord",is("无标签")))
                 .andExpect(status().isOk());
-
     }
 
 }
