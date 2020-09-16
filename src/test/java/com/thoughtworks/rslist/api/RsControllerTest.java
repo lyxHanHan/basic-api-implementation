@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,7 +81,8 @@ public class RsControllerTest {
     }
     @Test
     public void should_add_rs_event() throws Exception{
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济");
+        User user = new User("lyx","female",18,"1@2.com","12222222222");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
@@ -100,7 +102,8 @@ public class RsControllerTest {
 
     @Test
     public void should_modify_rs_event_eventName_and_keyWord() throws Exception {
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济");
+        User user = new User("lyxxx","female",18,"1@2.com","12222222222");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
 
