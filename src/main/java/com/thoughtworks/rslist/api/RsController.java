@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,9 +11,7 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
 @RestController
 public class RsController {
@@ -26,32 +25,40 @@ public class RsController {
   }
 
   @GetMapping("/rs/{index}")
-  public  RsEvent getOneRsEvent(@PathVariable int index){
-    return rsList.get(index -1);
+  public  ResponseEntity getOneRsEvent(@PathVariable int index){
+    return ResponseEntity.ok(rsList.get(index -1));
   }
 
   @GetMapping("/rs/list")
-  public List<RsEvent> getRsEventBetween(@RequestParam(required = false) Integer start,@RequestParam(required = false) Integer end){
+  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start,@RequestParam(required = false) Integer end){
     if(start == null || end == null){
-      return rsList;
+      return ResponseEntity.ok(rsList);
     }
-    return  rsList.subList(start-1,end);
+    return  ResponseEntity.ok(rsList);
   }
 
   @PostMapping("/rs/event")
-  public void addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
+  public ResponseEntity<Object> addRsEvent(@RequestBody String rsEvent) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent event = objectMapper.readValue(rsEvent,RsEvent.class);
     rsList.add(event);
+
+    return ResponseEntity.created(null).build();
   }
 
   @DeleteMapping ("/rs/{index}")
-  public void deleteRsEvent(@PathVariable int index)  {
+  public ResponseEntity deleteRsEvent(@PathVariable int index)  {
     rsList.remove(index-1);
+    return ResponseEntity.created(null).build();
+
   }
 
   @PatchMapping("/rs/{index}")
-  public void modifyRsEvent(@PathVariable int index,@RequestBody RsEvent rsEvent )  {
-  rsList.set(index - 1,rsEvent);
+  public ResponseEntity modifyRsEvent(@PathVariable int index,@RequestBody RsEvent rsEvent )  {
+    String eventName = rsEvent.getEventName();
+    String keyWord = rsEvent.getKeyWord();
+    rsList.get(index - 1).setEventName(eventName);
+    rsList.get(index - 1).setKeyWord(keyWord);
+    return ResponseEntity.created(null).build();
   }
 }

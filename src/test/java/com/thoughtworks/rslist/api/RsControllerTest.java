@@ -84,7 +84,7 @@ public class RsControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(4)))
                 .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
