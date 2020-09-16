@@ -51,7 +51,7 @@ public class RsController {
   @DeleteMapping ("/rs/{index}")
   public ResponseEntity deleteRsEvent(@PathVariable int index)  {
     rsList.remove(index-1);
-    return ResponseEntity.created(null).build();
+    return ResponseEntity.ok(rsList.remove(index-1));
 
   }
 
@@ -61,6 +61,6 @@ public class RsController {
     String keyWord = rsEvent.getKeyWord();
     rsList.get(index - 1).setEventName(eventName);
     rsList.get(index - 1).setKeyWord(keyWord);
-    return ResponseEntity.created(null).build();
+    return ResponseEntity.ok(null);
   }
 }
