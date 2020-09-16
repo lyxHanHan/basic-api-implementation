@@ -18,7 +18,7 @@ public class UserController{
     @PostMapping("/user")
     public ResponseEntity addUser(@RequestBody @Valid User user){
         userList.add(user);
-        return ResponseEntity.ok(userList.add(user));
+        return ResponseEntity.created(null).build();
     }
 
     @GetMapping("/user")
