@@ -10,8 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.is;
 
@@ -95,13 +94,11 @@ public class RsControllerTest {
 
     @Test
     public void should_modify_rs_event_eventName_and_keyWord() throws Exception {
-        String modifyString = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\"}";
-
-
+        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济");
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = objectMapper.writeValueAsString(modifyString);
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
 
-        mockMvc.perform(post("/rs/1").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(patch("/rs/1").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(3)))
@@ -118,7 +115,7 @@ public class RsControllerTest {
 
     @Test
     public void should_delete_rs_event() throws Exception {
-        mockMvc.perform(post("/rs/1")).andExpect(status().isOk());
+        mockMvc.perform(delete("/rs/1")).andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(2)))
                 .andExpect(jsonPath("$[0].eventName",is("第二条事件")))

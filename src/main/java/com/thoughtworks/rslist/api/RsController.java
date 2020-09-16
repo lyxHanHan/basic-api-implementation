@@ -41,14 +41,13 @@ public class RsController {
     rsList.add(event);
   }
 
-  @PostMapping("/rs/{index}")
+  @DeleteMapping ("/rs/{index}")
   public void deleteRsEvent(@PathVariable int index)  {
     rsList.remove(index-1);
   }
 
-  @PostMapping("/rs/{index}")
-  public void modifyRsEvent(@PathVariable int index,@RequestBody(required = false) String eventName,@RequestBody String keyWord)  {
-
+  @PatchMapping("/rs/{index}")
+  public void modifyRsEvent(@PathVariable int index,@RequestBody RsEvent rsEvent )  {
+  rsList.set(index - 1,rsEvent);
   }
-
 }
