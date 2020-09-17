@@ -101,13 +101,10 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(4)))
                 .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[0]",not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
                 .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1]",not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[3]",not(hasKey("user"))))
                 .andExpect(jsonPath("$[3].eventName",is("猪肉涨价了")))
                 .andExpect(jsonPath("$[3].keyWord",is("经济")))
                 .andExpect(status().isOk());
