@@ -49,6 +49,18 @@ public class UserController{
         return userList;
     }
 
+    @DeleteMapping("/user/{index}")
+    public ResponseEntity deleteUser(@RequestBody @Valid int index){
+        Optional <UserPO>  user = userRepository.findById(index);
+        if(user.isPresent()){
+            userRepository.deleteById(index);
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class})
     public ResponseEntity rsExceptionHandler (Exception e){
         String errorMessage;

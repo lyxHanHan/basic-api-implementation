@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 
+import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
@@ -20,8 +21,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -77,7 +78,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldnot_get_userInfor_for_not_exist_index() throws Exception {
+    public void should_not_get_userInfor_for_not_exist_index() throws Exception {
         User user = new User("lyx","female",18,"1@2.com","12222222222");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(user);
@@ -93,6 +94,17 @@ public class UserControllerTest {
                 .content(jsonString)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void should_delete_user() throws Exception {
+        UserPO savedUser = userRepository.save(UserPO.builder().userName("xiaoli").age(13).phone("18888888888")
+                .email("a@3.com").gender("female").voteNum(10).build());
+        String jsonString = "{\"eventName\":\"房价终于降了\",\"keyWord\":\"经济\",\"userId\":" + savedUser.getId() + "}";
+        List<RsEventPO> all = rsEventRepository.findAll();
+        mockMvc.perform(delete("/rs/1").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(0,all.size());
     }
 
     @Test
