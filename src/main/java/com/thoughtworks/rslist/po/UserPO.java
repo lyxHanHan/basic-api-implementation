@@ -1,44 +1,44 @@
-package com.thoughtworks.rslist.domain;
+package com.thoughtworks.rslist.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user")
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    @NotNull
-    @Size(max = 8)
-    private String name;
-    @NotNull
+public class UserPO {
+    @Id
+    @GeneratedValue
+    private int id;
+    @Column(name = "name")
+    private String userName;
     private String gender;
-    @NotNull
-    @Min(18)
-    @Max(100)
     private int age;
-    @Email
     private String email;
-    @Pattern(regexp = "1\\d{10}")
     private String phone;
     private int voteNum = 10;
 
-    public User(String name, String gender, int age, String email, String phone) {
-        this.name = name;
-        this.gender = gender;
-        this.age = age;
-        this.email = email;
-        this.phone = phone;
+    public int getId() {
+        return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setName() {
-        this.name = name;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getGender() {
@@ -81,3 +81,4 @@ public class User {
         this.voteNum = voteNum;
     }
 }
+
