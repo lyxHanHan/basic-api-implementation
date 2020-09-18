@@ -23,7 +23,7 @@ public class UserPO {
     private int age;
     private String email;
     private String phone;
-    private int voteNum = 10;
+    private int voteNum;
 
     public int getId() {
         return id;
