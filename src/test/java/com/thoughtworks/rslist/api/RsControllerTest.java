@@ -121,13 +121,14 @@ public class RsControllerTest {
 
     }
     @Test
+    @Order(5)
     public void should_add_rs_event_when_user_not_exist() throws Exception{
         String jsonString = "{\"eventName\":\"房价终于降了\",\"keyWord\":\"经济\",\"userId\":12}";
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
     @Test
-    @Order(5)
+    @Order(6)
     public void should_modify_rs_event_eventName_and_keyWord() throws Exception {
         User user = new User("lyx","female",18,"1@2.com","12222222222");
         RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
@@ -151,7 +152,7 @@ public class RsControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void should_delete_rs_event() throws Exception {
         mockMvc.perform(delete("/rs/1")).andExpect(status().isOk());
 
@@ -164,6 +165,7 @@ public class RsControllerTest {
     }
 
     @Test
+    @Order(8)
     public void should_throw_rs_event_not_valid_exception() throws Exception {
         mockMvc.perform(get("/rs/0"))
                 .andExpect(status().isBadRequest())
@@ -171,6 +173,7 @@ public class RsControllerTest {
     }
 
     @Test
+    @Order(9)
     void should_throw_method_arguement_not_valid_exception() throws Exception {
         User user = new User("lyx11111111","female",18,"1@2.com","12222222222");
         RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
@@ -182,10 +185,47 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.error",is("invalid param")));
     }
     @Test
+    @Order(10)
     public void should_throw_arguement_not_valid_range_about_start_and_end() throws Exception{
         mockMvc.perform(get("/rs/list?start=1&end=7"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid request param")));
     }
 
+
+
+    @Test
+    @Order(11)
+    public void should_only_update_rsEvent_keyword() throws Exception {
+        UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
+                .email("1@3.com").gender("female").age(13).build();
+        userRepository.save(userPO);
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
+        rsEventRepository.save(rsEventPO);
+        List<RsEventPO> all = rsEventRepository.findAll();
+
+        String jsonString1 = "{\"keyWord\":\"民生\",\"userId\":" + userPO.getId() + "}";
+        mockMvc.perform(patch("/rs/event/1").contentType(jsonString1)).andExpect(status().isOk());
+        assertEquals("猪肉涨价了",all.get(0).getEventName());
+        assertEquals("民生",all.get(0).getKeyWord());
+    }
+
+    @Test
+    @Order(12)
+    public void should_only_update_rsEvent_eventName() throws Exception {
+        UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
+                .email("1@3.com").gender("female").age(13).build();
+        userRepository.save(userPO);
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
+        rsEventRepository.save(rsEventPO);
+        List<RsEventPO> all = rsEventRepository.findAll();
+
+        String jsonString1 = "{\"eventName\":\"房价大跌了\",\"keyWord\":\"经济\",\"userId\":" + userPO.getId() + "}";
+        mockMvc.perform(patch("/rs/event/1").contentType(jsonString1)).andExpect(status().isOk());
+        assertEquals("房价大跌了",all.get(0).getEventName());
+        assertEquals("经济",all.get(0).getKeyWord());
+    }
 }
+
+
+

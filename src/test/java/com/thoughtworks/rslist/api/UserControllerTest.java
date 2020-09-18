@@ -103,7 +103,7 @@ public class UserControllerTest {
         userRepository.save(userPO);
         RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
         rsEventRepository.save(rsEventPO);
-        mockMvc.perform(delete("/user/{id}")).andExpect(status().isOk());
+        mockMvc.perform(delete("/user/1")).andExpect(status().isOk());
         assertEquals(0,rsEventRepository.findAll().size());
         assertEquals(0,userRepository.findAll().size());
     }

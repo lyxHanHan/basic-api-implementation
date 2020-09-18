@@ -102,6 +102,26 @@ public class RsController {
 
   }
 
+  @PatchMapping("/rs/event/{index}")
+  public ResponseEntity updateRsEvent (@PathVariable int id ,@RequestBody RsEvent rsEvent){
+    Optional<RsEventPO> event = rsEventRepository.findById(id);
+    if(!event.isPresent()){
+      return ResponseEntity.badRequest().build();
+    }
+    RsEventPO rsEventPO = event.get();
+    if(rsEvent.getUserId() != rsEventPO.getUserPO().getId()){
+      return ResponseEntity.badRequest().build();
+    }
+    if(rsEvent.getEventName() != null){
+      rsEventPO.setEventName(rsEvent.getEventName());
+    }
+    if(rsEvent.getKeyWord() != null){
+      rsEvent.setKeyWord(rsEvent.getKeyWord());
+    }
+    rsEventRepository.save(rsEventPO);
+    return ResponseEntity.ok(null);
+  }
+
   @PatchMapping("/rs/{index}")
   public ResponseEntity modifyRsEvent(@PathVariable int index,@RequestBody RsEvent rsEvent )  {
     String eventName = rsEvent.getEventName();
