@@ -4,6 +4,7 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.po.UserPO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,11 @@ public class UserController{
     List<User> userList = new ArrayList<>();
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     @PostMapping("/user")
-    public void addUser(@RequestBody @Valid User user) {
+    public void register(@RequestBody @Valid User user) {
         UserPO userPO = new UserPO();
         userPO.setUserName(user.getName());
         userPO.setGender(user.getGender());
@@ -35,13 +38,8 @@ public class UserController{
 
     @GetMapping("/user/{index}")
     public ResponseEntity getOneIndexUser(@RequestBody @Valid int index){
-        Optional <UserPO>  user = userRepository.findById(index);
-        if(user.get()!= null){
-            return ResponseEntity.ok(user.get());
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
+        userRepository.deleteById(index);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user")
@@ -52,13 +50,8 @@ public class UserController{
     @DeleteMapping("/user/{index}")
     public ResponseEntity deleteUser(@RequestBody @Valid int index){
         Optional <UserPO>  user = userRepository.findById(index);
-        if(user.isPresent()){
-            userRepository.deleteById(index);
-            return ResponseEntity.ok().build();
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
+        userRepository.deleteById(index);
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class})

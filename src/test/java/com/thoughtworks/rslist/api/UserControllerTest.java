@@ -98,13 +98,14 @@ public class UserControllerTest {
 
     @Test
     public void should_delete_user() throws Exception {
-        UserPO savedUser = userRepository.save(UserPO.builder().userName("xiaoli").age(13).phone("18888888888")
-                .email("a@3.com").gender("female").voteNum(10).build());
-        String jsonString = "{\"eventName\":\"房价终于降了\",\"keyWord\":\"经济\",\"userId\":" + savedUser.getId() + "}";
-        List<RsEventPO> all = rsEventRepository.findAll();
-        mockMvc.perform(delete("/rs/1").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        assertEquals(0,all.size());
+        UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
+                .email("1@3.com").gender("female").age(13).build();
+        userRepository.save(userPO);
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
+        rsEventRepository.save(rsEventPO);
+        mockMvc.perform(delete("/user/{id}")).andExpect(status().isOk());
+        assertEquals(0,rsEventRepository.findAll().size());
+        assertEquals(0,userRepository.findAll().size());
     }
 
     @Test
