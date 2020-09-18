@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController{
@@ -30,6 +31,17 @@ public class UserController{
         userPO.setPhone(user.getPhone());
         userPO.setVoteNum(user.getVoteNum());
         userRepository.save(userPO);
+    }
+
+    @GetMapping("/user/{index}")
+    public ResponseEntity getOneIndexUser(@RequestBody @Valid int index){
+        Optional <UserPO>  user = userRepository.findById(index);
+        if(user.get()!= null){
+            return ResponseEntity.ok(user.get());
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/user")

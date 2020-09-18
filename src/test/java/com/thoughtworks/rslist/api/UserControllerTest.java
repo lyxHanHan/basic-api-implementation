@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -51,9 +52,48 @@ public class UserControllerTest {
         assertEquals(1,all.size());
         assertEquals("lyx",all.get(0).getUserName());
         assertEquals("female",all.get(0).getGender());
-
     }
 
+    @Test
+    public void should_get_userInfor() throws Exception {
+        User user = new User("lyx","female",18,"1@2.com","12222222222");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .content(jsonString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<UserPO> all = userRepository.findAll();
+
+        mockMvc.perform(get("/user/1")
+                .content(jsonString)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        assertEquals(1,all.size());
+        assertEquals("lyx",all.get(0).getUserName());
+        assertEquals("female",all.get(0).getGender());
+    }
+
+    @Test
+    public void shouldnot_get_userInfor_for_not_exist_index() throws Exception {
+        User user = new User("lyx","female",18,"1@2.com","12222222222");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .content(jsonString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<UserPO> all = userRepository.findAll();
+
+        mockMvc.perform(get("/user/5")
+                .content(jsonString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void name_should_less_than_8() throws Exception{
