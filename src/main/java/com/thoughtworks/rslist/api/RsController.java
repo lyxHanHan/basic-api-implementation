@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,8 @@ public class RsController {
   private List<RsEvent> rsList = initRsEventList();
   @Autowired
   RsEventRepository rsEventRepository;
+  @Autowired
+  UserRepository userRepository;
 
   public RsController() throws SQLException {
   }
@@ -75,6 +78,9 @@ public class RsController {
 
   @PostMapping("/rs/event")
   public ResponseEntity<Object> addRsEvent(@RequestBody @Valid RsEvent rsEvent) throws JsonProcessingException {
+    if(!userRepository.findById(rsEvent.getUserId()).isPresent()){
+      return ResponseEntity.badRequest().build();
+    }
     RsEventPO eventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userId(rsEvent.getUserId()).build();
     rsEventRepository.save(eventPO);
     return ResponseEntity.created(null).build();

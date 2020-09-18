@@ -120,7 +120,12 @@ public class RsControllerTest {
         assertEquals(savedUser.getId(),all.get(0).getUserId());
 
     }
-
+    @Test
+    public void should_add_rs_event_when_user_not_exist() throws Exception{
+        String jsonString = "{\"eventName\":\"房价终于降了\",\"keyWord\":\"经济\",\"userId\":12}";
+        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
     @Test
     @Order(5)
     public void should_modify_rs_event_eventName_and_keyWord() throws Exception {
