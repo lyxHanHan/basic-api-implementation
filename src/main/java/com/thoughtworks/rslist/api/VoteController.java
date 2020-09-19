@@ -27,7 +27,7 @@ public class VoteController {
 
     @PostMapping("/rs/vote/{rsEventId}")
     public ResponseEntity voteForRsEvent(@RequestBody @Valid Vote vote,@PathVariable Integer rsEvertId){
-        int voteCount =  vote.getVoteNum();
+        int voteCount = vote.getVoteNum();
         UserPO userPO = userRepository.findById(vote.getVoteNum()).get();
         Integer voteNum = userPO.getVoteNum();
         if(voteNum >= voteCount){

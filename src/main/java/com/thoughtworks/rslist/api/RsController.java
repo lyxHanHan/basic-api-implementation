@@ -32,6 +32,12 @@ public class RsController {
   RsEventRepository rsEventRepository;
   @Autowired
   UserRepository userRepository;
+  @Autowired
+  UserPO userPO;
+  @Autowired
+  RsEvent rsEvent;
+  @Autowired
+
 
   public RsController() throws SQLException {
   }
@@ -61,19 +67,22 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public  ResponseEntity getOneRsEvent(@PathVariable int index){
-    if (index <= 0 || index > rsList.size()){
-      throw new RsEventNotValidException("invalid index");
+
+    Optional<RsEventPO> event = rsEventRepository.findById(index);
+    if(event.get() != null){
+      return ResponseEntity.ok(event.get());
     }
-    return ResponseEntity.ok(rsList.get(index -1));
+    return ResponseEntity.badRequest().build();
   }
 
   @GetMapping("/rs/list")
-  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start,@RequestParam(required = false) Integer end){
+  public ResponseEntity getRsEventList(@RequestParam(required = false) Integer start,@RequestParam(required = false) Integer end,@RequestBody @Valid RsEvent rsEvent){
+    List<RsEventPO> rsList = rsEventRepository.findAll();
     if(start == null || end == null){
       return ResponseEntity.ok(rsList);
-    }
-    if((end - start +1) >rsList.size() || start > rsList.size()){
-      throw new RsEventNotValidException("invalid request param");
+     }
+    if((end - start +1) >rsList.size()|| start >rsList.size()){
+     return  ResponseEntity.badRequest().build();
     }
     return  ResponseEntity.ok(rsList.subList(start - 1,end));
   }
@@ -90,16 +99,15 @@ public class RsController {
   }
 
   @DeleteMapping ("/rs/{index}")
-  public ResponseEntity deleteRsEvent(@PathVariable int index)  {
-    Optional<UserPO> user = userRepository.findById(index);
-    if(user.isPresent()){
-      userRepository.deleteById(index);
+  public ResponseEntity deleteRsEvent(@PathVariable @Valid int index)  {
+    Optional<RsEventPO> rsEvent = rsEventRepository.findById(index);
+    if(rsEvent.isPresent()){
+      rsEventRepository.deleteById(index);
       return ResponseEntity.ok().build();
     }
     else{
       return ResponseEntity.badRequest().build();
     }
-
   }
 
   @PatchMapping("/rs/event/{index}")
@@ -124,10 +132,11 @@ public class RsController {
 
   @PatchMapping("/rs/{index}")
   public ResponseEntity modifyRsEvent(@PathVariable int index,@RequestBody RsEvent rsEvent )  {
+    Optional<RsEventPO> event = rsEventRepository.findById(index);
     String eventName = rsEvent.getEventName();
     String keyWord = rsEvent.getKeyWord();
-    rsList.get(index - 1).setEventName(eventName);
-    rsList.get(index - 1).setKeyWord(keyWord);
+    event.get().setEventName(eventName);
+    event.get().setKeyWord(keyWord);
     return ResponseEntity.ok(null);
   }
 

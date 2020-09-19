@@ -38,6 +38,10 @@ public class RsControllerTest {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    RsEventPO rsEventPO;
+    @Autowired
+    UserPO userPO;
 
     @BeforeEach
     public void setUp (){
@@ -48,61 +52,53 @@ public class RsControllerTest {
     @Test
     @Order(1)
     public void should_get_rs_event_list() throws Exception{
-        mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[0]",not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1]",not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[2]",not(hasKey("user"))))
-                .andExpect(status().isOk());
+        rsEventPO = RsEventPO.builder().eventName("第一条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第二条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第三条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+
+        List<RsEventPO> rsList = rsEventRepository.findAll();
+        mockMvc.perform(get("/rs/list")).andExpect(status().isOk());
+
+        assertEquals(3,rsList.size());
+        assertEquals("第一条事件",rsList.get(0).getEventName());
+        assertEquals("无标签",rsList.get(1).getKeyWord());
     }
 
     @Test
     @Order(2)
-    public void should_get_one_rs_event() throws Exception{
-        mockMvc.perform(get("/rs/1"))
-                .andExpect(jsonPath("$.eventName",is("第一条事件")))
-                .andExpect(jsonPath("$.keyWord",is("无标签")))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/2"))
-                .andExpect(jsonPath("$.eventName",is("第二条事件")))
-                .andExpect(jsonPath("$.keyWord",is("无标签")))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/3"))
-                .andExpect(jsonPath("$.eventName",is("第三条事件")))
-                .andExpect(jsonPath("$.keyWord",is("无标签")))
-                .andExpect(status().isOk());
+    public void should_get_one_rs_event() throws Exception {
+        rsEventPO = RsEventPO.builder().eventName("第一条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第二条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第三条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+
+        mockMvc.perform(get("/rs/1")).andExpect(status().isOk());
+        List<RsEventPO> rsList = rsEventRepository.findAll();
+        assertEquals(1, rsList.size());
+        assertEquals("第二条事件", rsList.get(0).getKeyWord());
     }
+
     @Test
     @Order(3)
     public void should_get_rs_event_between() throws Exception{
-        mockMvc.perform(get("/rs/list?start=1&end=2"))
-                .andExpect(jsonPath("$",hasSize(2)))
-                .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/list?start=2&end=3"))
-                .andExpect(jsonPath("$",hasSize(2)))
-                .andExpect(jsonPath("$[0].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/rs/list?start=1&end=3"))
-                .andExpect(jsonPath("$",hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyWord",is("无标签")))
-                .andExpect(status().isOk());
+        rsEventPO = RsEventPO.builder().eventName("第一条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第二条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第三条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+
+        List<RsEventPO> rsList = rsEventRepository.findAll();
+        mockMvc.perform(get("/rs/list?start=1&end=2")).andExpect(status().isOk());
+
+        assertEquals(2,rsList.size());
+        assertEquals("第一条事件",rsList.get(0).getEventName());
+        assertEquals("无标签",rsList.get(1).getKeyWord());
     }
     @Test
     @Order(4)
@@ -122,7 +118,7 @@ public class RsControllerTest {
     }
     @Test
     @Order(5)
-    public void should_add_rs_event_when_user_not_exist() throws Exception{
+    public void should_not_add_rs_event_when_user_not_exist() throws Exception{
         String jsonString = "{\"eventName\":\"房价终于降了\",\"keyWord\":\"经济\",\"userId\":12}";
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -130,72 +126,37 @@ public class RsControllerTest {
     @Test
     @Order(6)
     public void should_modify_rs_event_eventName_and_keyWord() throws Exception {
-        User user = new User("lyx","female",18,"1@2.com","12222222222");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = objectMapper.writeValueAsString(rsEvent);
+        UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
+                .email("1@3.com").gender("female").age(13).build();
+        userRepository.save(userPO);
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
+        rsEventRepository.save(rsEventPO);
+        List<RsEventPO> rsEvent = rsEventRepository.findAll();
 
-        mockMvc.perform(patch("/rs/1").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+        String jsonString1 = "{\"eventName\":\"房价大跌了\",\"keyWord\":\"民生\"}";
+        mockMvc.perform(patch("/rs/1").contentType(jsonString1))
                 .andExpect(status().isOk());
-
-        mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName",is("猪肉涨价了")))
-                .andExpect(jsonPath("$[0].keyWord",is("经济")))
-                .andExpect(jsonPath("$[0]",not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1]",not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[2]",not(hasKey("user"))))
-                .andExpect(status().isOk());
+        assertEquals("猪肉涨价了",rsEvent.get(0).getEventName());
+        assertEquals("民生",rsEvent.get(0).getKeyWord());
     }
 
     @Test
     @Order(7)
     public void should_delete_rs_event() throws Exception {
-        mockMvc.perform(delete("/rs/1")).andExpect(status().isOk());
+        rsEventPO = RsEventPO.builder().eventName("第一条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
+        rsEventPO = RsEventPO.builder().eventName("第二条事件").keyWord("无标签").build();
+        rsEventPO = rsEventRepository.save(rsEventPO);
 
-        mockMvc.perform(get("/rs/list")).andExpect(jsonPath("$",hasSize(2)))
-                .andExpect(jsonPath("$[0].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无标签")))
-                .andExpect(jsonPath("$[1].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无标签")))
-                .andExpect(status().isOk());
+
+        List<RsEventPO> rsEvent = rsEventRepository.findAll();
+        mockMvc.perform(delete("/rs/1")).andExpect(status().isOk());
+        assertEquals(1,rsEvent.size());
     }
+
 
     @Test
     @Order(8)
-    public void should_throw_rs_event_not_valid_exception() throws Exception {
-        mockMvc.perform(get("/rs/0"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid index")));
-    }
-
-    @Test
-    @Order(9)
-    void should_throw_method_arguement_not_valid_exception() throws Exception {
-        User user = new User("lyx11111111","female",18,"1@2.com","12222222222");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = objectMapper.writeValueAsString(rsEvent);
-
-        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid param")));
-    }
-    @Test
-    @Order(10)
-    public void should_throw_arguement_not_valid_range_about_start_and_end() throws Exception{
-        mockMvc.perform(get("/rs/list?start=1&end=7"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid request param")));
-    }
-
-
-
-    @Test
-    @Order(11)
     public void should_only_update_rsEvent_keyword() throws Exception {
         UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
                 .email("1@3.com").gender("female").age(13).build();
@@ -211,7 +172,7 @@ public class RsControllerTest {
     }
 
     @Test
-    @Order(12)
+    @Order(9)
     public void should_only_update_rsEvent_eventName() throws Exception {
         UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
                 .email("1@3.com").gender("female").age(13).build();
