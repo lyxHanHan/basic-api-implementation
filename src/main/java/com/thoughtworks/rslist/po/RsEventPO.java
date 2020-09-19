@@ -20,7 +20,7 @@ public class RsEventPO {
     private int id;
     private String eventName;
     private String keyWord;
-
+    private int voteNum;
     @ManyToOne(cascade = CascadeType.REMOVE)
     private UserPO userPO;
 
