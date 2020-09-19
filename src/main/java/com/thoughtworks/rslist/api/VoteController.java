@@ -8,11 +8,15 @@ import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRespository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
@@ -43,4 +47,22 @@ public class VoteController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @GetMapping("/voteRecord")
+    public ResponseEntity<List<Vote>> getVoteRecord(@RequestParam int userId, @RequestParam int rsEventId,
+                                                    @RequestParam int pageIndex){
+        Pageable pageable = PageRequest.of(pageIndex,5);
+        return ResponseEntity.ok(
+                voteRespository.findAllByUserIdAndRsEventId(userId,rsEventId,pageable)
+                        .stream().map(
+                        item -> Vote.builder()
+                                .userId(item.getUser().getId())
+                                .time(item.getVoteTime())
+                                .rsEventId(item.getRsEvent().getId())
+                                .voteNum(item.getVoteNum()).build()
+
+                ).collect(Collectors.toList()));
+    }
+
 }

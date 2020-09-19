@@ -80,4 +80,35 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$",hasSize(1)))
                 .andExpect(status().isBadRequest());
     }
+
+@Test
+    public void should_get_vote_Record() throws Exception{
+    for (int i = 0;i < 8;i++){
+        VotePO votePO = VotePO.builder().voteNum(i+1).voteTime(LocalDateTime.now())
+                .userP0(userPO).rsEvent(rsEventPO).build();
+        voteRespository.save(votePO);
+    }
+    mockMvc.perform(post("/voteRecord")
+            .param("rsEventId",String.valueOf((rsEventPO.getId())))
+            .param("userId",String.valueOf((userPO.getId())))
+            .param("pageIndex","1"))
+            .andExpect(jsonPath("$",hasSize(5)))
+            .andExpect(jsonPath("$[0].userId",is(userPO.getId())))
+            .andExpect(jsonPath("$[0].rsEventId",is(rsEventPO.getId())))
+            .andExpect(jsonPath("$[0].voteNum",is(1)))
+            .andExpect(jsonPath("$[1].voteNum",is(2)))
+            .andExpect(jsonPath("$[2].voteNum",is(3)))
+            .andExpect(jsonPath("$[3].voteNum",is(4)))
+            .andExpect(jsonPath("$[5].voteNum",is(5)));
+    mockMvc.perform(post("/voteRecord")
+            .param("rsEventId",String.valueOf((rsEventPO.getId())))
+            .param("userId",String.valueOf((userPO.getId())))
+            .param("pageIndex","2"))
+            .andExpect(jsonPath("$",hasSize(3)))
+            .andExpect(jsonPath("$[0].userId",is(userPO.getId())))
+            .andExpect(jsonPath("$[0].rsEventId",is(rsEventPO.getId())))
+            .andExpect(jsonPath("$[0].voteNum",is(6)))
+            .andExpect(jsonPath("$[1].voteNum",is(7)))
+            .andExpect(jsonPath("$[2].voteNum",is(8)));
+    }
 }

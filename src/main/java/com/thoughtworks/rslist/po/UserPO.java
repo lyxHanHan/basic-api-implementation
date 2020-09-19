@@ -18,6 +18,7 @@ public class UserPO {
     @Id
     @GeneratedValue
     private int id;
+
     @Column(name = "name")
     private String userName;
     private String gender;
