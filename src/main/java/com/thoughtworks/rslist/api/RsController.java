@@ -19,7 +19,6 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

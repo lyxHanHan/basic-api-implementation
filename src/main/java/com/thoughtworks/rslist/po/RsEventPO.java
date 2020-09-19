@@ -21,7 +21,11 @@ public class RsEventPO {
     private String eventName;
     private String keyWord;
     private int voteNum;
+
     @ManyToOne(cascade = CascadeType.REMOVE)
     private UserPO userPO;
+
+    @OneToMany
+    private VotePO votePO;
 
 }
