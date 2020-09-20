@@ -1,47 +1,41 @@
 package com.thoughtworks.rslist.api;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
-import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RsControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
+    private final RsEventRepository rsEventRepository;
+    private final UserRepository userRepository;
+    private final MockMvc mockMvc;
     RsEventPO rsEventPO;
-    @Autowired
-    UserPO userPO;
+    public RsControllerTest(RsEventRepository rsEventRepository, UserRepository userRepository, MockMvc mockMvc, RsEventPO rsEventPO) throws SQLException {
+        this.rsEventRepository = rsEventRepository;
+        this.userRepository = userRepository;
+        this.mockMvc = mockMvc;
+        this.rsEventPO = rsEventPO;
+    }
 
     @BeforeEach
     public void setUp (){
