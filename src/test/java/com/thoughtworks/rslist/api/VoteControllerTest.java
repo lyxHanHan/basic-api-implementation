@@ -62,7 +62,7 @@ public class VoteControllerTest {
 @Test
     public void should_vote_if_vote_number_less_than_user_has() throws Exception{
         VotePO votePO = VotePO.builder().voteNum(5).voteTime(LocalDateTime.now())
-                .userP0(userPO).rsEvent(rsEventPO).build();
+                .userP0(userPO).rsEventPO(rsEventPO).build();
         voteRespository.save(votePO);
         mockMvc.perform(post("/rs/vote/{rsEventId}")
                 .param("rsEventId",String.valueOf((rsEventPO.getId()))))
@@ -73,7 +73,7 @@ public class VoteControllerTest {
 @Test
     public void should_not_vote_if_vote_number_less_than_user_has() throws Exception{
         VotePO votePO = VotePO.builder().voteNum(9).voteTime(LocalDateTime.now())
-                .userP0(userPO).rsEvent(rsEventPO).build();
+                .userP0(userPO).rsEventPO(rsEventPO).build();
         voteRespository.save(votePO);
         mockMvc.perform(post("/rs/vote/{rsEventId}")
                 .param("rsEventId",String.valueOf((rsEventPO.getId()))))
@@ -85,7 +85,7 @@ public class VoteControllerTest {
     public void should_get_vote_Record() throws Exception{
     for (int i = 0;i < 8;i++){
         VotePO votePO = VotePO.builder().voteNum(i+1).voteTime(LocalDateTime.now())
-                .userP0(userPO).rsEvent(rsEventPO).build();
+                .userP0(userPO).rsEventPO(rsEventPO).build();
         voteRespository.save(votePO);
     }
     mockMvc.perform(post("/voteRecord")

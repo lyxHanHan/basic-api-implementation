@@ -57,9 +57,9 @@ public class VoteController {
                 voteRespository.findAllByUserIdAndRsEventId(userId,rsEventId,pageable)
                         .stream().map(
                         item -> Vote.builder()
-                                .userId(item.getUser().getId())
-                                .time(item.getVoteTime())
-                                .rsEventId(item.getRsEvent().getId())
+                                .userId(item.getUserP0().getId())
+                                .voteTime(item.getVoteTime())
+                                .rsEventId(item.getRsEventPO().getId())
                                 .voteNum(item.getVoteNum()).build()
 
                 ).collect(Collectors.toList()));

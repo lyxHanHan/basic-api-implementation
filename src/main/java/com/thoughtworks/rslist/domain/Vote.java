@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -17,7 +18,7 @@ public class Vote {
     private int userId;
     private int rsEventId;
     private int voteNum;
-    private String voteTime;
+    private LocalDateTime voteTime;
 
     public int getUserId() {
         return userId;
@@ -43,11 +44,11 @@ public class Vote {
         this.voteNum = voteNum;
     }
 
-    public String getVoteTime() {
+    public LocalDateTime getVoteTime() {
         return voteTime;
     }
 
-    public void setVoteTime(String voteTime) {
+    public void setVoteTime(LocalDateTime voteTime) {
         this.voteTime = voteTime;
     }
 }
