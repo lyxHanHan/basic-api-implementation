@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController{
@@ -36,15 +37,39 @@ public class UserController{
         userRepository.save(userPO);
     }
 
+<<<<<<< HEAD
     @DeleteMapping("/user/{id}")
     public ResponseEntity deleteUser(@RequestBody @Valid int id){
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
+=======
+    @GetMapping("/user/{index}")
+    public ResponseEntity getOneIndexUser(@RequestBody @Valid int index){
+        Optional <UserPO>  user = userRepository.findById(index);
+        if(user.get()!= null){
+            return ResponseEntity.ok(user.get());
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
+>>>>>>> 38119634b157c0c1dce345e8d3ad822b149ec472
     }
 
     @GetMapping("/user")
     public List<User> getUserList(){
         return userList;
+    }
+
+    @DeleteMapping("/user/{index}")
+    public ResponseEntity deleteUser(@RequestBody @Valid int index){
+        Optional <UserPO>  user = userRepository.findById(index);
+        if(user.isPresent()){
+            userRepository.deleteById(index);
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class})
