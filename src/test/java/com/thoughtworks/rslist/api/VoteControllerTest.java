@@ -91,7 +91,7 @@ public class VoteControllerTest {
     mockMvc.perform(post("/voteRecord")
             .param("rsEventId",String.valueOf((rsEventPO.getId())))
             .param("userId",String.valueOf((userPO.getId())))
-            .param("pageIndex","1"))
+            . param("pageIndex","1"))
             .andExpect(jsonPath("$",hasSize(5)))
             .andExpect(jsonPath("$[0].userId",is(userPO.getId())))
             .andExpect(jsonPath("$[0].rsEventId",is(rsEventPO.getId())))
