@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 
+import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
@@ -19,8 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -110,5 +110,15 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid user")));;
     }
-
+    @Test
+    public void should_delete_user() throws Exception{
+        UserPO userPO = UserPO.builder().userName("xiaowang").voteNum(10).phone("18888888888")
+                .email("1@3.com").gender("female").age(13).build();
+        userRepository.save(userPO);
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord("经济").eventName("猪肉涨价了").userPO(userPO).build();
+        rsEventRepository.save(rsEventPO);
+        mockMvc.perform(delete("/user/{id}")).andExpect(status().isOk());
+        assertEquals(0,rsEventRepository.findAll().size());
+        assertEquals(0,userRepository.findAll().size());
+    }
 }
