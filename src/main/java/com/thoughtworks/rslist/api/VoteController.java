@@ -20,12 +20,16 @@ import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
-    @Autowired
-    VoteRespository voteRespository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
+    private final UserRepository userRepository;
+    private final RsEventRepository rsEventRepository;
+    private final VoteRespository voteRespository;
+
+
+    public VoteController(UserRepository userRepository,RsEventRepository rsEventRepository,VoteRespository voteResposity){
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+        this.voteRespository = voteResposity;
+    }
 
     @PostMapping("/rs/vote/{rsEventId}")
     public ResponseEntity voteForRsEvent(@RequestBody @Valid Vote vote,@PathVariable Integer rsEvertId){

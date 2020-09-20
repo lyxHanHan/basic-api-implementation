@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,8 +20,12 @@ import java.util.Optional;
 @RestController
 public class UserController{
     List<UserPO> userList = new ArrayList<>();
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+
     @Autowired
     RsEventRepository rsEventRepository;
 

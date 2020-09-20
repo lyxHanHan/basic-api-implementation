@@ -32,18 +32,12 @@ import java.util.stream.Collectors;
 @RestController
 public class RsController {
   private List<RsEvent> rsList = initRsEventList();
-  @Autowired
-  RsEventRepository rsEventRepository;
-  @Autowired
-  UserRepository userRepository;
-  @Autowired
-  UserPO userPO;
-  @Autowired
-  RsEvent rsEvent;
-  @Autowired
-  VoteRespository voteRespository;
 
-  public RsController() throws SQLException {
+  private final RsEventRepository rsEventRepository;
+  private final UserRepository userRepository;
+  public RsController(RsEventRepository rsEventRepository,UserRepository userRepository) throws SQLException {
+    this.rsEventRepository = rsEventRepository;
+    this.userRepository = userRepository;
   }
 
   private List<RsEvent> initRsEventList() throws SQLException {
